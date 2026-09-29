@@ -4,16 +4,16 @@
 # Pour compiler la version r�cursive utiliser la commande make main_rec.ex
 
 
-main.ex : main.o listeTriee.o element.o
+main.exe : main.o listeTriee.o element.o
 # L'executable main.ex doit �tre remis � jour si certains des fichiers 
 # main.o liste.o et element.o sont plus r�cents
-	g++ main.o listeTriee.o element.o -o main.ex
+	g++ main.o listeTriee.o element.o -o main.exe
 
 main_rec.ex : main.o liste_rec.o  element.o
 # L'executable main_rec.ex doit �tre remis � jour si certains des fichiers 
 
 # main.o liste_rec.o et element.o sont plus r�cents
-	g++ main.o liste_rec.o element.o -o main_rec.ex
+	g++ main.o liste_rec.o element.o -o main_rec.exe
 
 element.o : element.cpp element.h
 # Le fichier objet element.o doit �tre remis � jour si certains des fichiers
@@ -39,5 +39,5 @@ clean :
 	-rm *.o *~
 
 veryclean : clean 
-	-rm *.ex
+	-rm *.exe
 

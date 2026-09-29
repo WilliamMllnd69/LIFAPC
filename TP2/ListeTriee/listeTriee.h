@@ -13,7 +13,8 @@ class Cellule
 
     private :
         Elem info;
-        Cellule *psuivant;
+        Cellule * psuivant;
+        Cellule * psecond;
 };
 
 class Liste_Triee
@@ -89,12 +90,16 @@ class Liste_Triee
     //           la connaissance de l'adresse d'une de ses cellules
 
     void insere(const Elem & e);
+
+    void affichageSecondNiveau() const;
  
     private :
     void affichageDepuisCellule(const Cellule * pc) const;
+    void etablissementSecondNiveau();
     //Donnees membres-----------------------------------------------------------
         Cellule sentinelle;
         int taille;
+        bool chainage_niveau_deux;
 };
 
 

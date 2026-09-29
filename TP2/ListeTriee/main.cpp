@@ -13,14 +13,20 @@ int main()
     lili.insere(i);
   std::printf("Lili\n");
   lili.affichage();
+  std::printf("Lili\n");
+  lili.affichageSecondNiveau();
   Liste_Triee lolo(lili);
   std::printf("Lolo\n");
   lolo.affichage();
+  std::printf("Lolo\n");
+  lolo.affichageSecondNiveau();
   lili.vide();
   std::printf("Lili\n");
   lili.affichage();
   lili=lolo;
   printf("Lili\n");
   lili.affichage();/**/
+  std::printf("Lili\n");
+  lili.affichageSecondNiveau();
   return 0;
 }

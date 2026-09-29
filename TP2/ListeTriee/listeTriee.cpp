@@ -1,6 +1,9 @@
 // LIFAPC - R. Chaine
-
+#include <thread>
+#include <chrono>
 #include <cstdio>
+#include <stdlib.h>
+#include <time.h>
 #include "element.h" //offrant le type Elem
 #include "listeTriee.h"
 //#include <cassert> //Si on veut faire des tests de preconditions en mode debug
@@ -8,23 +11,25 @@
 
 Liste_Triee::Liste_Triee()
 {
-    sentinelle.psuivant=nullptr; //this->ad=nullptr;
+    sentinelle.psuivant=nullptr; 
+    sentinelle.psecond=nullptr;
     taille=0;
+    chainage_niveau_deux = true;
 }
 
 bool Liste_Triee::testVide() const
 {
-    return taille==0; //this->ad==nullptr;
+    return taille==0; 
 }
 
 Elem Liste_Triee::premierElement() const
 {
-    return sentinelle.psuivant->info; //this->ad->info;
+    return sentinelle.psuivant->info; 
 }
 
 Cellule * Liste_Triee::premiereCellule() const
 {
-    return sentinelle.psuivant; //this->ad;
+    return sentinelle.psuivant; 
 }
 
 Cellule * Liste_Triee::celluleSuivante(const Cellule *c) const
@@ -51,14 +56,59 @@ void Liste_Triee::affichage() const
 }
 #endif
 
+void Liste_Triee::etablissementSecondNiveau()
+{
+  Cellule * pc1 = &sentinelle;
+  while(pc1!=nullptr){
+    pc1->psecond = nullptr;
+    pc1=pc1->psuivant;
+  }
+  pc1 = &sentinelle;
+  Cellule * pc2 = pc1->psuivant;
+  pc1->psecond = pc2;
+  while(pc2!=nullptr){
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    srand((unsigned int)time(NULL));
+    if(rand()%2==1){
+      pc1->psecond = pc2;
+      pc2 = pc2->psuivant;
+    }
+    else{
+      pc1 = pc1->psecond;
+      pc1->psecond = pc2;
+    }
+  }
+  /*
+  pc->psecond = pc->psuivant;
+  pc = pc->psuivant;
+  while(pc!=nullptr && pc->psuivant!=nullptr && pc->psuivant->psuivant!=nullptr){
+    pc->psecond = pc->psuivant->psuivant;
+    pc = pc->psecond;
+  }*/
+  chainage_niveau_deux = true;
+}
 
 void Liste_Triee::suppressionEnTete()
 {
   //assert(testVide()); //Si on veut faire des tests en mode debug
-  Cellule *temp = sentinelle.psuivant; // temp=this->ad; On memorise l'adresse de la premiere Cellule
-  sentinelle.psuivant=sentinelle.psuivant->psuivant; //this->ad=this->ad->psuivant; La deuxieme Cellule de *this devient la premiere
-  delete temp;//L'espace occupe par la Cellule abandonnee est restitue
-  taille--; // this->taille--;
+  Cellule *temp = sentinelle.psuivant; 
+  sentinelle.psuivant=sentinelle.psuivant->psuivant;
+  delete temp;
+  taille--; 
+  chainage_niveau_deux = false;
+  etablissementSecondNiveau();
+}
+
+void Liste_Triee::affichageSecondNiveau() const{
+  std::printf("Liste (it) ");
+  const Cellule * pc = &sentinelle;
+  while(pc!=nullptr){
+    if(pc!=&sentinelle){
+      affichageElement(pc->info);
+    }
+    pc=pc->psecond;
+  }
+  std::putchar('\n');
 }
 
 #ifndef _RECURSIF 
@@ -88,6 +138,8 @@ void Liste_Triee::insere(const Elem &e)
     temp2->psuivant = c;
 
     taille++;
+    chainage_niveau_deux = false;
+    etablissementSecondNiveau();
 }
 
 Liste_Triee::Liste_Triee(const Liste_Triee & l)
