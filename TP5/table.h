@@ -1,35 +1,48 @@
 #include <iostream>
+#include "cle.h"
+#include "infoAssociee.h"
 
 #ifndef _TABLE
 #define _TABLE
 
 class Table;
 
-typedef unsigned int clé;
-typedef double information_associée;
-typedef (int)(fonctionHachage)(clé);
-typedef (int)(fonctionRehachage)(int);
+typedef int (*fonctionHachage)(const cle&,const int&);
+typedef int (*fonctionRehachage)(const int&);
 
-
+enum statut {
+    VIDE,
+    OCCUPE,
+    SUPPRIME
+};
 
 class Case {
-    clé c;
-    information_associée info;
-    int nb_essaie;
-}
+    friend class Table;
+    private : 
+        cle c;
+        information_associee info;
+        int nb_essaie;
+        statut s;
+        int index;
+};
 
 class Table
 {
-    private:
-        int M;
-        int m;
+    private :
+        int taille;
+        int taille_utilise;
         Case * tab;
         fonctionHachage fH;
         fonctionRehachage fR;
     public:
-        Case& recherche(const clé & c) const;
-        Table(const fonctionHachage & fHachage,const fonctionRehachage & fRehachage);
-        void insertion(const clé & c);
-        void suppression(const clé & c);
-}
+        Case recherche(const cle & c) const;
+        Table(const int & t,const fonctionHachage & fHachage,const fonctionRehachage & fRehachage);
+        void insertion(const cle & c,const information_associee & info);
+        void suppression(const cle & c);
+        ~Table();
+        void affichage() const;
+        void modifInfo(const cle & c,const information_associee & info);
+        information_associee returnInfo(const cle & c) const;
+        int returnIndex(const cle & c) const;
+};
 #endif
